@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroTask — Premium To-Do Dashboard</title>
+  <!-- SEO & Icons -->
+  <meta name="description" content="AeroTask is a premium, glassmorphic, interactive to-do list application for organizing tasks, categories, and deadlines.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">⚡</div>
+          <span class="logo-text">AeroTask</span>
+        </div>
+      </div>
+      
+      <!-- Progress Tracker Panel -->
+      <div class="progress-panel">
+        <div class="progress-header">
+          <span class="progress-title">Your Progress</span>
+          <span class="progress-percent" id="progress-percentage">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="progress-stats">
+          <span id="progress-done-count">0 of 0 tasks</span>
+        </div>
+        <div class="progress-quote" id="progress-quote">"Let's get some tasks done today!"</div>
+      </div>
+      
+      <!-- Navigation / Categories -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Categories</div>
+        <ul class="category-list" id="category-list">
+          <!-- Dynamic Category List -->
+        </ul>
+        <button class="btn-add-category" id="btn-add-category-modal">
+          <i data-lucide="plus" class="nav-icon"></i> Add Category
+        </button>
+      </nav>
+      
+      <!-- Bottom Control (Theme / Sound) -->
+      <div class="sidebar-footer">
+        <div class="footer-controls-row">
+          <button class="footer-control-btn" id="theme-toggle" title="Toggle Theme">
+            <i data-lucide="sun" id="theme-icon-sun" class="theme-icon"></i>
+            <i data-lucide="moon" id="theme-icon-moon" class="theme-icon hidden"></i>
+            <span class="control-label">Theme</span>
+          </button>
+          <button class="footer-control-btn" id="sound-toggle" title="Toggle Sound">
+            <i data-lucide="volume-2" id="sound-icon-on" class="sound-icon"></i>
+            <i data-lucide="volume-x" id="sound-icon-off" class="sound-icon hidden"></i>
+            <span class="control-label">Sound</span>
+          </button>
+        </div>
+        <button class="btn-reset-dashboard" id="btn-reset-all" title="Reset Dashboard">
+          <i data-lucide="rotate-ccw"></i> Reset Dashboard
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Dashboard Area -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <h1 class="welcome-message" id="welcome-greeting">Hello, friend</h1>
+          <p class="current-date" id="current-date">Friday, July 3</p>
+        </div>
+        
+        <div class="header-right">
+          <!-- Search Bar -->
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="search-input" placeholder="Search tasks...">
+            <button class="clear-search hidden" id="clear-search-btn" title="Clear search">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          
+          <button class="mobile-toggle-btn" id="mobile-menu-btn" title="Toggle Sidebar">
+            <i data-lucide="menu"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Control Bar (Filters and Sorting) -->
+      <div class="controls-bar">
+        <div class="status-tabs">
+          <button class="tab-btn active" data-status="all" id="tab-all">All</button>
+          <button class="tab-btn" data-status="active" id="tab-active">Active</button>
+          <button class="tab-btn" data-status="completed" id="tab-completed">Completed</button>
+        </div>
+        
+        <div class="sorting-controls">
+          <label for="sort-select" class="sort-label">Sort by:</label>
+          <div class="select-wrapper">
+            <select id="sort-select">
+              <option value="createdAt-desc">Date Created (Newest)</option>
+              <option value="createdAt-asc">Date Created (Oldest)</option>
+              <option value="dueDate-asc">Due Date (Soonest)</option>
+              <option value="priority-desc">Priority (High to Low)</option>
+              <option value="priority-asc">Priority (Low to High)</option>
+              <option value="title-asc">Alphabetical (A-Z)</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Add Input -->
+      <div class="quick-add-container">
+        <div class="quick-add-input-wrapper">
+          <i data-lucide="plus-circle" class="quick-add-icon"></i>
+          <input type="text" id="quick-add-input" placeholder="Add a new task quickly... (Press Enter)">
+        </div>
+        <button class="btn btn-primary" id="btn-open-task-modal">
+          <i data-lucide="sliders"></i> Detailed Add
+        </button>
+      </div>
+
+      <!-- Task Lists -->
+      <div class="tasks-section">
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <h3>All clear!</h3>
+          <p>No tasks found. Click "Detailed Add" or type above to start getting productive!</p>
+        </div>
+
+        <!-- Task List Containers -->
+        <div class="task-list" id="task-list-container">
+          <!-- Tasks dynamically rendered here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Detailed Task Modal (Add/Edit) -->
+  <div class="modal-overlay hidden" id="task-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title">Create New Task</h2>
+        <button class="modal-close-btn" id="btn-close-task-modal" title="Close Modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="task-form" class="modal-body">
+        <input type="hidden" id="task-edit-id">
+        
+        <div class="form-group">
+          <label for="task-title">Task Title *</label>
+          <input type="text" id="task-title" required placeholder="What needs to be done?">
+        </div>
+        
+        <div class="form-group">
+          <label for="task-desc">Description</label>
+          <textarea id="task-desc" rows="3" placeholder="Add details or notes..."></textarea>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-due">Due Date</label>
+            <input type="date" id="task-due">
+          </div>
+          
+          <div class="form-group">
+            <label for="task-priority">Priority</label>
+            <div class="select-wrapper">
+              <select id="task-priority">
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+              </select>
+              <i data-lucide="chevron-down" class="select-chevron"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="task-category">Category</label>
+          <div class="select-wrapper">
+            <select id="task-category">
+              <!-- Dynamically populated from JS state -->
+            </select>
+            <i data-lucide="chevron-down" class="select-chevron"></i>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-task">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-task">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom Category Modal -->
+  <div class="modal-overlay hidden" id="category-modal">
+    <div class="modal-card modal-small">
+      <div class="modal-header">
+        <h2>Add Custom Category</h2>
+        <button class="modal-close-btn" id="btn-close-category-modal" title="Close Modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="category-form" class="modal-body">
+        <div class="form-group">
+          <label for="new-category-name">Category Name *</label>
+          <input type="text" id="new-category-name" required placeholder="e.g. Finance, Fitness, Hobby" maxlength="15">
+        </div>
+        <div class="form-group">
+          <label>Theme Color</label>
+          <div class="color-picker-grid" id="color-picker-grid">
+            <!-- Colors injected via JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-category">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- App Main Code -->
+  <script src="app.js"></script>
+</body>
+</html>
